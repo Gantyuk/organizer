@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
 
 class AdminController extends Controller
 {
+    protected $redirectTo = '/admin';
+
     /**
      * Create a new controller instance.
      *
@@ -23,6 +26,16 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('admin');
+        $usersOnline = [];
+        foreach (User::get() as $user) {
+            if ($user->isOnline()) {
+                $usersOnline[] = $user;
+            }
+        }
+        return view('auth.admin.admin', [
+            'users' => $usersOnline,
+            'count_user' => User::get()->count(),
+            'count_user_online' => count($usersOnline)
+        ]);
     }
 }

@@ -59,6 +59,10 @@
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('user.index') }}">
+                                        <i class="fa fa-btn fa-user"></i>
+                                        Users
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('admin.logout') }}">
                                         <i class="fa fa-btn fa-sign-out"></i>
                                         {{ __('Logout') }}

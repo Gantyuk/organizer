@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'img_path',
     ];
 
     /**
@@ -26,4 +26,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function isOnline()
+    {
+        return \Illuminate\Support\Facades\Cache::has('user-is-online-' . $this->id);
+    }
+
 }
