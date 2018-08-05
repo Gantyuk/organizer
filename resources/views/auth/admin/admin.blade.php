@@ -8,6 +8,8 @@
                     class="text-center">{{$count_user}}</h4></div>
         <div class="alert alert-success float-right" style="margin-right: 15px"> Count of online users: <h4
                     class="text-center">{{$count_user_online}}</h4></div>
+        <div class="alert alert-primary float-right" style="margin-right: 15px"> Count of tasks: <h4
+                    class="text-center">{{$count_task}}</h4></div>
 
         <table class="table table-striped">
             <thead>

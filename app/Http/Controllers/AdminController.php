@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Task;
 use Illuminate\Http\Request;
 use App\User;
 
@@ -35,6 +36,7 @@ class AdminController extends Controller
         return view('auth.admin.admin', [
             'users' => $usersOnline,
             'count_user' => User::get()->count(),
+            'count_task' => Task::get()->count(),
             'count_user_online' => count($usersOnline)
         ]);
     }

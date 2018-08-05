@@ -31,5 +31,9 @@ class User extends Authenticatable
     {
         return \Illuminate\Support\Facades\Cache::has('user-is-online-' . $this->id);
     }
+    public function task()
+    {
+        return $this->hasMany('App\Task', 'user_id', 'id');
+    }
 
 }

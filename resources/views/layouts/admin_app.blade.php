@@ -59,6 +59,10 @@
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('task.index') }}">
+                                        <i class="fa fa-btn fa-tasks"></i>
+                                        Task
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('user.index') }}">
                                         <i class="fa fa-btn fa-user"></i>
                                         Users
@@ -79,7 +83,7 @@
     <main class="py-4">
         @yield('content')
     </main>
-    <footer class="modal-footer " style="position:absolute; bottom: 0;">
+    <footer class="modal-footer " >
         <div class="container">
             <div class="row ">
                 <div class="col-md-12">
