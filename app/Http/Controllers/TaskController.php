@@ -37,7 +37,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return view('auth.admin.task.tasks', ['tasks' => Task::paginate(10), 'count' => Task::get()->count()]);
+        return view('auth.admin.task.tasks');
     }
 
     /**
@@ -139,4 +139,170 @@ class TaskController extends Controller
 
         return redirect()->route('task.index');
     }
+
+    public function filtration(Request $request)
+    {
+        if ($request->ajax()) {
+            $name = $request->get('name');
+            $user = $request->get('user');
+            $importance = $request->get('importance');
+            $status = $request->get('status');
+            $output = '';
+
+            if ($name != '') {
+                if ($importance != '') {
+                    if ($user != '') {
+                        if ($status != '') {
+                            $data = Task::where('name', 'like', '%' . $name . '%')
+                                ->where('importance', '' . $importance . '')
+                                ->where('status', '' . $status . '')
+                                ->WhereHas('user', function ($q) use ($user) {
+                                    $q->where('name', 'like', '%' . $user . '%');
+                                })
+                                ->orderBy('created_at')
+                                ->get();
+
+                        } else {
+                            $data = Task::where('name', 'like', '%' . $name . '%')
+                                ->where('importance', '' . $importance . '')
+                                ->WhereHas('user', function ($q) use ($user) {
+                                    $q->where('name', 'like', '%' . $user . '%');
+                                })
+                                ->orderBy('created_at')
+                                ->get();
+                        }
+                    } elseif ($status != '') {
+                        $data = Task::where('name', 'like', '%' . $name . '%')
+                            ->where('importance', '' . $importance . '')
+                            ->where('status', '' . $status . '')
+                            ->orderBy('created_at')
+                            ->get();
+                    } else {
+                        $data = Task::where('name', 'like', '%' . $name . '%')
+                            ->where('importance', '' . $importance . '')
+                            ->orderBy('created_at')
+                            ->get();
+                    }
+                } elseif ($user != '') {
+                    if ($status != '') {
+                        $data = Task::where('name', 'like', '%' . $name . '%')
+                            ->where('status', '' . $status . '')
+                            ->WhereHas('user', function ($q) use ($user) {
+                                $q->where('name', 'like', '%' . $user . '%');
+                            })
+                            ->orderBy('created_at')
+                            ->get();
+
+                    } else {
+                        $data = Task::where('name', 'like', '%' . $name . '%')
+                            ->WhereHas('user', function ($q) use ($user) {
+                                $q->where('name', 'like', '%' . $user . '%');
+                            })
+                            ->orderBy('created_at')
+                            ->get();
+                    }
+                } elseif ($status != '') {
+                    $data = Task::where('name', 'like', '%' . $name . '%')
+                        ->where('status', '' . $status . '')
+                        ->orderBy('created_at')
+                        ->get();
+                } else {
+                    $data = Task::where('name', 'like', '%' . $name . '%')
+                        ->orderBy('created_at')
+                        ->get();
+                }
+            } elseif ($importance != '') {
+                if ($user != '') {
+                    if ($status != '') {
+                        $data = Task::where('importance', '' . $importance . '')
+                            ->where('status', '' . $status . '')
+                            ->WhereHas('user', function ($q) use ($user) {
+                                $q->where('name', 'like', '%' . $user . '%');
+                            })
+                            ->orderBy('created_at')
+                            ->get();
+
+                    } else {
+                        $data = Task::where('importance', '' . $importance . '')
+                            ->WhereHas('user', function ($q) use ($user) {
+                                $q->where('name', 'like', '%' . $user . '%');
+                            })
+                            ->orderBy('created_at')
+                            ->get();
+                    }
+                } elseif ($status != '') {
+                    $data = Task::where('importance', '' . $importance . '')
+                        ->where('status', '' . $status . '')
+                        ->orderBy('created_at')
+                        ->get();
+                } else {
+                    $data = Task::where('importance', '' . $importance . '')
+                        ->orderBy('created_at')
+                        ->get();
+                }
+            } elseif ($user != '') {
+                if ($status != '') {
+                    $data = Task::where('status', '' . $status . '')
+                        ->WhereHas('user', function ($q) use ($user) {
+                            $q->where('name', 'like', '%' . $user . '%');
+                        })
+                        ->orderBy('created_at')
+                        ->get();
+
+                } else {
+                    $data = Task::WhereHas('user', function ($q) use ($user) {
+                            $q->where('name', 'like', '%' . $user . '%');
+                        })
+                        ->orderBy('created_at')
+                        ->get();
+                }
+            } elseif ($status != '') {
+                $data = Task::where('status', '' . $status . '')
+                    ->orderBy('created_at')
+                    ->get();
+            } else {
+                $data = Task::orderBy('created_at')
+                    ->get();
+            }
+            $total_row = $data->count();
+            if ($total_row > 0) {
+                foreach ($data as $task) {
+                    $output .= '
+        <tr>
+                     <td>' . $task->name . '</td>
+                     <td>' . $task->user->name . '</td>
+                     <td>' . $task->importance . '</td>
+                     <td>' . $task->status . '</td>
+                     <td>' . $task->created_at . '</td>
+                     <td>
+                         <form onsubmit="if(confirm(\'Delete?\')){return true}else{ return false}"
+                               action="{{route(\'task.destroy\',$task)}}" method="post">
+                             ' . method_field('DELETE') . '
+                             ' . csrf_field() . '
+
+                             <a href="' . route('task.edit', $task) . '" method="post">
+                                 <i class="fa fa-edit"></i>
+                             </a>
+                             <button type="submit" class="btn"><i class="fa fa-trash-o"></i></button>
+                         </form>
+                     </td>
+                 </tr>
+         ';
+                }
+            } else {
+                $output = '
+        <tr>
+                     <td colspan="6" class="text-center"><h2>No Task</h2></td>
+                 </tr>
+        ';
+            }
+            $data = array(
+                'table_data' => $output,
+                'total_data' => $total_row
+            );
+
+            echo json_encode($data);
+        }
+    }
+
 }

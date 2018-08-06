@@ -4,8 +4,8 @@
 
     <div class="container">
 
-        <div class="alert alert-success float-right" style="margin-left: 50px; margin-top: 10px"> Count of Task : <h4
-                    class="text-center">{{$count}}</h4></div>
+        <div class="alert alert-success float-right" style="margin-left: 50px; margin-top: 10px">
+            Count of Task : <h4 class="text-center" id="total_records"></h4></div>
         @component('components.breadcrumb')
             @slot('title')Tasks list @endslot
             @slot('parent')Home @endslot
@@ -21,48 +21,92 @@
             <thead>
             <th>Name</th>
             <th>User</th>
-            <th>Date</th>
             <th>Importance</th>
             <th>Status</th>
+            <th>Date</th>
             <th class="text-right">Edit</th>
-            </thead>
-            <tbody>
-            @forelse($tasks as $task)
-                <tr>
-                    <td>{{$task->name}}</td>
-                    <td>{{$task->user->name}}</td>
-                    <td>{{$task->created_at}}</td>
-                    <td>{{$task->importance}}</td>
-                    <td>{{$task->status}}</td>
-                    <td>
-                        <form onsubmit="if(confirm('Delete?')){return true}else{ return false}"
-                              action="{{route('task.destroy',$task)}}" method="post">
-                            {{method_field('DELETE')}}
-                            @csrf
-
-                            <a href="{{route('task.edit',$task)}}" method="post">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                            <button type="submit" class="btn"><i class="fa fa-trash-o"></i></button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6" class="text-center"><h2>No Task</h2></td>
-                </tr>
-            @endforelse
-            </tbody>
-            <tfoot>
             <tr>
-                <td colspan="6">
-                    <ul class="pagination pull-right">
-                        {{$tasks->links()}}
-                    </ul>
+                <td >
+                    <input type="text" name="name" id="name" class="form-control" placeholder="Name" value=""/>
+                </td>
+                <td >
+                    <input type="text" name="user" id="user" class="form-control" placeholder="User" value=""/>
+                </td>
+                <td> {{Form::select('importance', [
+                        "Important"=>"Important",
+                        "Not important"=>"Not Important",
+                     ], null  , [ 'placeholder'=>"All" , 'class' => 'form-control','id'=>'importance'])}}
+                </td>
+                <td>
+                    {{Form::select('status', [
+                        "New"=>"New",
+                        "Executed"=>"Executed",
+                        "Canceled"=>"Canceled",
+                    ],null , [ 'placeholder'=>"All",'class' => 'form-control','id'=>'status'])}}
                 </td>
             </tr>
-            </tfoot>
+            </thead>
+
+            <tbody>
+
+            </tbody>
         </table>
 
     </div>
+    <script>
+        $(document).ready(function () {
+
+            fetch_customer_data();
+
+            function fetch_customer_data(name = '', importance = '', status = '',user = '') {
+                $.ajax({
+                    url: "{{ route('task.filtration') }}",
+                    method: 'GET',
+                    data: {
+                        name: name,
+                        user: user,
+                        importance: importance,
+                        status: status
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        $('tbody').html(data.table_data);
+                        $('#total_records').text(data.total_data);
+                    }
+                })
+            }
+            $('#importance').change(function () {
+                var name = $('#name').val(),
+                    user = $('#user').val(),
+                    status = $('#status').val(),
+                    importance = $('#importance').val();
+                fetch_customer_data(name,importance,status,user);
+            });
+            $('#status').change(function () {
+
+                var name = $('#name').val(),
+                    user = $('#user').val(),
+                    status = $('#status').val(),
+                    importance = $('#importance').val();
+                fetch_customer_data(name,importance,status,user);
+            });
+            $(document).on('keyup', '#name', function () {
+                var name = $('#name').val(),
+                    user = $('#user').val(),
+                    status = $('#status').val(),
+                    importance = $('#importance').val();
+                fetch_customer_data(name,importance,status,user);
+            });
+
+            $(document).on('keyup', '#user', function () {
+
+                var name = $('#name').val(),
+                    user = $('#user').val(),
+                    status = $('#status').val(),
+                    importance = $('#importance').val();
+                fetch_customer_data(name,importance,status,user);
+            });
+        });
+    </script>
+
 @endsection

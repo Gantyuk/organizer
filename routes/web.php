@@ -26,9 +26,10 @@ Route::prefix('admin')->group(function () {
     Route::post('/login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
     Route::get('/', 'AdminController@index')->name('admin');
     Route::get('/logout', 'Auth\AdminLoginController@logout')->name('admin.logout');
-
+    Route::get('/task/filtration', 'TaskController@filtration')->name('task.filtration');
     Route::resource('/user', 'UserController');
     Route::resource('/task', 'TaskController');
+
     // Password reset routes
     Route::post('/password/email', 'Auth\AdminForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
     Route::get('/password/reset', 'Auth\AdminForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
