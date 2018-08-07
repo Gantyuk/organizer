@@ -69,9 +69,9 @@ class UserController extends Controller
      * @param  \App\User $user
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(User $user)
     {
-        // TODO add a show for user
+        return view('auth.admin.user.show', ['user' => $user]);
     }
 
     /**

@@ -27,7 +27,7 @@
             <tbody>
             @forelse($users as $user)
                 <tr>
-                    <td>{{$user->name}}</td>
+                    <td><a href="{{route('user.show',$user)}}" >{{$user->name}}</a></td>
                     <td>{{$user->email}}</td>
                     <td>
                         <form onsubmit="if(confirm('Delete?')){return true}else{ return false}"

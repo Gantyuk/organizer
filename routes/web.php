@@ -26,6 +26,9 @@ Route::prefix('admin')->group(function () {
     Route::post('/login', 'Auth\AdminLoginController@login')->name('admin.login.submit');
     Route::get('/', 'AdminController@index')->name('admin');
     Route::get('/logout', 'Auth\AdminLoginController@logout')->name('admin.logout');
+
+    Route::get('/executed/all', 'TaskController@executedAll')->name('task.executed.all');
+    Route::get('/executed', 'TaskController@executed')->name('task.executed');
     Route::get('/task/filtration', 'TaskController@filtration')->name('task.filtration');
     Route::resource('/user', 'UserController');
     Route::resource('/task', 'TaskController');

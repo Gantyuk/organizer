@@ -140,6 +140,31 @@ class TaskController extends Controller
         return redirect()->route('task.index');
     }
 
+    public function executedAll()
+    {
+        foreach (Task::all() as $task) {
+            $task->status = 'Executed';
+            $task->save();
+        }
+        return back();
+    }
+
+    public function executed(Request $request)
+    {
+        if ($request->ajax()) {
+            $id = $request->get('id');
+            foreach (Task::where('id', $id)->get() as $task) {
+                $task->status = 'Executed';
+                $task->save();
+            }
+            echo json_encode([
+                'success'=>'success'
+            ]);
+
+        }
+    }
+
+
     public function filtration(Request $request)
     {
         if ($request->ajax()) {
@@ -251,8 +276,8 @@ class TaskController extends Controller
 
                 } else {
                     $data = Task::WhereHas('user', function ($q) use ($user) {
-                            $q->where('name', 'like', '%' . $user . '%');
-                        })
+                        $q->where('name', 'like', '%' . $user . '%');
+                    })
                         ->orderBy('created_at')
                         ->get();
                 }
@@ -270,13 +295,19 @@ class TaskController extends Controller
                     $output .= '
         <tr>
                      <td>' . $task->name . '</td>
-                     <td>' . $task->user->name . '</td>
+                     <td>
+                           <a href="' . route('user.show', $task->user) . '" >' . $task->user->name . '</a>
+                     </td>
                      <td>' . $task->importance . '</td>
                      <td>' . $task->status . '</td>
                      <td>' . $task->created_at . '</td>
                      <td>
+                    <form onsubmit="execut (event)" id="executed_task" action="" method="get" style="display: inline-block">
+        <input type="text"  id="id" hidden value="1"/>
+        <button  type="submit"  class="btn"><i class="fa fa-check"></i></button>
+    </form>
                          <form onsubmit="if(confirm(\'Delete?\')){return true}else{ return false}"
-                               action="{{route(\'task.destroy\',$task)}}" method="post">
+                               action="' . route('task.destroy', $task) . '" method="post" style="display: inline-block">
                              ' . method_field('DELETE') . '
                              ' . csrf_field() . '
 
@@ -285,6 +316,7 @@ class TaskController extends Controller
                              </a>
                              <button type="submit" class="btn"><i class="fa fa-trash-o"></i></button>
                          </form>
+                          
                      </td>
                  </tr>
          ';
