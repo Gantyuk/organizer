@@ -11,7 +11,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" ></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('vendor/jquery/jquery.js') }}" defer></script>
 
     <!-- Fonts -->
@@ -84,12 +84,9 @@
     <main class="py-4">
         @yield('content')
     </main>
-    <footer class="modal-footer " >
-        <div class="container">
-            <div class="row ">
-                <div class="col-md-12">
-                    <p class="copyright text-muted ">Copyright &copy; {{ config('app.name', 'Laravel') }} {{ date('Y')}}</p></div>
-            </div>
+    <footer>
+        <div class="footer-copyright text-center py-3">Copyright
+            &copy; {{ config('app.name', 'Laravel') }} {{ date('Y')}}</a>
         </div>
     </footer>
 </div>
