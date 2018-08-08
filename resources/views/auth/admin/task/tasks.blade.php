@@ -114,15 +114,17 @@
                 fetch_customer_data(name, importance, status, user);
             });
         });
-        function execut  (e) {
+        function execut  (e,id) {
+
             $.ajax({
                 url: "{{ route('task.executed') }}",
                 method: 'GET',
                 data: {
-                    id: $('#id').val()
+                    id: id
                 },
                 dataType: 'json',
                 success: function (data) {
+                    console.log($(this));
                     if (data.success == "success") {
                         fetch_customer_data();
                     }

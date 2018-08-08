@@ -25,7 +25,7 @@
             "Canceled"=>"Canceled",
 ],e(isset($task->status))? $task->status : null  , [ 'class' => 'form-control'])}}
 
-<label for="">Avatar</label>
+<label for="">Image</label>
 <input type="file" name="image" class="form-control" />
 
 

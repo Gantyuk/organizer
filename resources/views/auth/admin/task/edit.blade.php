@@ -9,7 +9,7 @@
             @slot('active')Edit Task @endslot
         @endcomponent
         <hr>
-        <form class="form-horizontal" action="{{route('task.update',$task)}}" method="post">
+        <form class="form-horizontal" action="{{route('task.update',$task)}}" method="post" enctype="multipart/form-data">
             {{method_field('PUT')}}
             @csrf
             @include('auth.admin.task.partials.form')

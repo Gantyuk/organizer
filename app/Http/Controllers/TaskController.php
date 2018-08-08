@@ -86,7 +86,7 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        //TODO create show function for task
+        return view('auth.admin.task.show', ['task' => $task]);
     }
 
     /**
@@ -158,12 +158,11 @@ class TaskController extends Controller
                 $task->save();
             }
             echo json_encode([
-                'success'=>'success'
+                'success' => 'success'
             ]);
 
         }
     }
-
 
     public function filtration(Request $request)
     {
@@ -294,7 +293,9 @@ class TaskController extends Controller
                 foreach ($data as $task) {
                     $output .= '
         <tr>
-                     <td>' . $task->name . '</td>
+                     <td>
+                        <a href="' . route('task.show', $task) . '" >' . $task->name . '</a>
+                     </td>
                      <td>
                            <a href="' . route('user.show', $task->user) . '" >' . $task->user->name . '</a>
                      </td>
@@ -302,20 +303,19 @@ class TaskController extends Controller
                      <td>' . $task->status . '</td>
                      <td>' . $task->created_at . '</td>
                      <td>
-                    <form onsubmit="execut (event)" id="executed_task" action="" method="get" style="display: inline-block">
-        <input type="text"  id="id" hidden value="1"/>
-        <button  type="submit"  class="btn"><i class="fa fa-check"></i></button>
-    </form>
-                         <form onsubmit="if(confirm(\'Delete?\')){return true}else{ return false}"
-                               action="' . route('task.destroy', $task) . '" method="post" style="display: inline-block">
-                             ' . method_field('DELETE') . '
-                             ' . csrf_field() . '
+                    <form onsubmit="execut (event,' . $task->id . ')" id="executed_task" action="" method="get" style="display: inline-block">
+                        <button  type="submit"  class="btn"><i class="fa fa-check"></i></button>
+                    </form>
+                     <form onsubmit="if(confirm(\'Delete?\')){return true}else{ return false}"
+                           action="' . route('task.destroy', $task) . '" method="post" style="display: inline-block">
+                         ' . method_field('DELETE') . '
+                         ' . csrf_field() . '
 
-                             <a href="' . route('task.edit', $task) . '" method="post">
-                                 <i class="fa fa-edit"></i>
-                             </a>
-                             <button type="submit" class="btn"><i class="fa fa-trash-o"></i></button>
-                         </form>
+                         <a href="' . route('task.edit', $task) . '" method="post">
+                             <i class="fa fa-edit"></i>
+                         </a>
+                         <button type="submit" class="btn"><i class="fa fa-trash-o"></i></button>
+                     </form>
                           
                      </td>
                  </tr>
