@@ -68,7 +68,7 @@ class TaskController extends Controller
 
         Task::create([
                 'name' => $request['name'],
-                'user_id' => $request['user_id'],
+                'phone' => $request['user_id'],
                 'importance' => $request['importance'],
                 'status' => $request['status'],
                 'img_path' => $img_path,
